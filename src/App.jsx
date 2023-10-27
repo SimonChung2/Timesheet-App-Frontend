@@ -1,5 +1,5 @@
 import Timer from "./components/Timer"
-import './App.css'
+import './App.css' //test
 
 function App() {
  
