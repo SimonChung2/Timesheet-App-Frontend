@@ -1,77 +1,69 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect } from "react";
 
-export default function Timer(){
+export default function Timer({ onActivityEnd }) {
+  const [seconds, setSeconds] = useState(0);
+  const [minutes, setMinutes] = useState(0);
+  const [hours, setHours] = useState(0);
+  const [timerRunning, setTimerRunning] = useState(false);
 
-    const [ seconds, setSeconds ] = useState(0);
-    const [ minutes, setMinutes ] = useState(0);
-    const [ hours, setHours ] = useState(0);
-    const [ timerRunning, setTimerRunning ] = useState(false);
+  useEffect(() => {
+    let interval;
+    let currentSeconds = seconds;
+    let currentMinutes = minutes;
 
-    useEffect(() => {
-        let interval;
-        let currentSeconds = seconds;
-        let currentMinutes = minutes;
-      
-        if (timerRunning) {
-          interval = setInterval(() => {
-            if (currentSeconds < 59) {
-              currentSeconds += 1;
-            } else {
-              currentSeconds = 0;
-              if (currentMinutes < 59) {
-                currentMinutes += 1;
-              } else {
-                currentMinutes = 0;
-                setHours((prevHours) => prevHours + 1);
-              }
-            }
-            setMinutes(currentMinutes);
-            setSeconds(currentSeconds);
-          }, 1000);
+    if (timerRunning) {
+      interval = setInterval(() => {
+        if (currentSeconds < 59) {
+          currentSeconds += 1;
         } else {
-          clearInterval(interval);
+          currentSeconds = 0;
+          if (currentMinutes < 59) {
+            currentMinutes += 1;
+          } else {
+            currentMinutes = 0;
+            setHours((prevHours) => prevHours + 1);
+          }
         }
-      
-        return () => clearInterval(interval);
-      }, [timerRunning, seconds, minutes]);
-      
-
-    function startTimer() {
-        setTimerRunning(true);
+        setMinutes(currentMinutes);
+        setSeconds(currentSeconds);
+      }, 1000);
+    } else {
+      clearInterval(interval);
     }
 
-    function stopTimer() {
-        setTimerRunning(false);
-    }
+    return () => clearInterval(interval);
+  }, [timerRunning, seconds, minutes]);
 
-    function resetTimer(){
-        setTimerRunning(false);
-        setSeconds(0);
-        setMinutes(0);
-        setHours(0);
-    }
+  function startTimer() {
+    setTimerRunning(true);
+  }
 
-    let secondsFirstDigit;
-    if(seconds>9){
-        secondsFirstDigit="";
-    } else{
-        secondsFirstDigit=0;
-    }
+  function stopTimer() {
+    setTimerRunning(false);
+  }
 
-    let minutesFirstDigit
-    if(minutes>9){
-        minutesFirstDigit="";
-    } else{
-        minutesFirstDigit=0;
-    }
+  function endActivity() {
+    const totalTime = { hours, minutes, seconds };
+    resetTimer();
+    onActivityEnd(totalTime); // Call the callback to pass activity details
+  }
 
-    return (
-        <>
-            <h2>Timer</h2>
-            <div><span>{hours} : {minutesFirstDigit}{minutes} : {secondsFirstDigit}{seconds}</span></div>
-            <button onClick={startTimer}>Start Timer</button>
-            <button onClick={stopTimer}>Stop Timer</button>
-            <button onClick={resetTimer}>Reset</button>
-        </>
-    );
+  function resetTimer() {
+    setTimerRunning(false);
+    setSeconds(0);
+    setMinutes(0);
+    setHours(0);
+  }
+
+  return (
+    <>
+      <h2>Timer</h2>
+      <div>
+        <span>{hours} : {minutes < 10 ? `0${minutes}` : minutes} : {seconds < 10 ? `0${seconds}` : seconds}</span>
+      </div>
+      <button onClick={startTimer}>Start Activity</button>
+      <button onClick={stopTimer}>Pause Activity</button>
+      <button onClick={endActivity}>End Activity</button>
+    </>
+  );
 }
