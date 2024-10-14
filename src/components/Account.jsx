@@ -1,12 +1,40 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Timer from './Timer'; // Import the Timer component
 import Logout from './Logout'; // Import the Logout component
 
 function Account({ user }) {
+
+    // If user is not passed down, try fetching from localStorage
+    if (!user) {
+        const storedUser = localStorage.getItem('user');
+        user = storedUser ? JSON.parse(storedUser) : null;
+    }
+
     const [activities, setActivities] = useState([]); // State to hold activities
     const [activityName, setActivityName] = useState('');
     const [timeTaken, setTimeTaken] = useState({ hours: 0, minutes: 0, seconds: 0 });
     const [date, setDate] = useState(new Date().toISOString().split('T')[0]); // Format the date for the date input
+
+    // Fetch activities when the component mounts
+    useEffect(() => {
+        const fetchActivities = async () => {
+            try {
+                const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/activities?username=${user?.username}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    setActivities(data); // Set the fetched activities in the state
+                } else {
+                    console.error('Failed to fetch activities');
+                }
+            } catch (error) {
+                console.error('Error fetching activities:', error);
+            }
+        };
+
+        if (user) {
+            fetchActivities();
+        }
+    }, [user]); // Only run the effect when the `user` is available
 
     const handleActivityEnd = async (totalTime) => {
         setTimeTaken(totalTime); // Set the time taken from the timer
@@ -20,7 +48,7 @@ function Account({ user }) {
         };
 
         try {
-            const response = await fetch(`${process.env.VITE_SERVER_URL}/activities`, {
+            const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/activities`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -30,8 +58,10 @@ function Account({ user }) {
 
             if (response.ok) {
                 const newActivity = await response.json();
-                // Add the new activity to the state
-                setActivities([...activities, { ...activityData, number: activities.length + 1 }]);
+                // Fetch updated activities from the server after adding a new one
+                const updatedResponse = await fetch(`${import.meta.env.VITE_SERVER_URL}/activities?username=${user?.username}`);
+                const updatedActivities = await updatedResponse.json();
+                setActivities(updatedActivities); // Update the state with fetched activities
                 setActivityName(''); // Clear the activity name
             } else {
                 console.error('Failed to add activity');
@@ -41,19 +71,13 @@ function Account({ user }) {
         }
     };
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        // This submit handler isn't necessary for your flow,
-        // since activities are added via `handleActivityEnd`.
-    };
-
     return (
         <div>
             <h1>Your Account</h1>
             <p>Username: {user?.username}</p>
 
             <h2>Activity Log</h2>
-            <form onSubmit={handleSubmit}>
+            <form>
                 <div>
                     <label>Activity Number: </label>
                     <input type="text" value={activities.length + 1} readOnly />
@@ -79,7 +103,6 @@ function Account({ user }) {
                     <label>Date: </label>
                     <input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
                 </div>
-                <button type="submit">Add Activity</button>
             </form>
 
             <Timer onActivityEnd={handleActivityEnd} />
@@ -95,9 +118,9 @@ function Account({ user }) {
                     </tr>
                 </thead>
                 <tbody>
-                    {activities.map((activity) => (
-                        <tr key={activity.number}>
-                            <td>{activity.number}</td>
+                    {activities.map((activity, index) => (
+                        <tr key={index}>
+                            <td>{index + 1}</td> {/* Index + 1 for the activity number */}
                             <td>{activity.activityName}</td>
                             <td>{activity.timeTaken}</td>
                             <td>{activity.date}</td>
