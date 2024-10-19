@@ -13,7 +13,6 @@ function Account({ user }) {
     const [activities, setActivities] = useState([]); // State to hold activities
     const [activityName, setActivityName] = useState('');
     const [timeTaken, setTimeTaken] = useState({ hours: 0, minutes: 0, seconds: 0 });
-    const [date, setDate] = useState(new Date().toISOString().split('T')[0]); // Format the date for the date input
 
     // Fetch activities when the component mounts
     useEffect(() => {
@@ -39,12 +38,15 @@ function Account({ user }) {
     const handleActivityEnd = async (totalTime) => {
         setTimeTaken(totalTime); // Set the time taken from the timer
 
+        // Get the current date when the activity ends
+        const currentDate = new Date().toISOString().split('T')[0]; // Format the current date
+
         // Prepare the activity data to be sent to the server
         const activityData = {
             username: user?.username,
             activityName: activityName,
             timeTaken: `${totalTime.hours}h ${totalTime.minutes}m ${totalTime.seconds}s`,
-            date: date,
+            date: currentDate, // Use the current date here
         };
 
         try {
@@ -99,10 +101,6 @@ function Account({ user }) {
                         readOnly
                     />
                 </div>
-                <div>
-                    <label>Date: </label>
-                    <input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
-                </div>
             </form>
 
             <Timer onActivityEnd={handleActivityEnd} />
@@ -120,13 +118,14 @@ function Account({ user }) {
                 <tbody>
                     {activities.map((activity, index) => (
                         <tr key={index}>
-                            <td>{index + 1}</td> {/* Index + 1 for the activity number */}
-                            <td>{activity.activityName}</td>
-                            <td>{activity.timeTaken}</td>
-                            <td>{activity.date}</td>
+                        <td>{index + 1}</td>
+                        <td>{activity.activityName}</td>
+                        <td>{activity.timeTaken}</td>
+                        <td>{activity.date}</td>
                         </tr>
-                    ))}
+                     ))}
                 </tbody>
+
             </table>
 
             <Logout />
