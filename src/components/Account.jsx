@@ -77,57 +77,58 @@ function Account({ user }) {
         <div>
             <h1>Your Account</h1>
             <p>Username: {user?.username}</p>
-
-            <h2>Activity Log</h2>
-            <form>
-                <div>
-                    <label>Activity Number: </label>
-                    <input type="text" value={activities.length + 1} readOnly />
-                </div>
-                <div>
-                    <label>Activity Name: </label>
-                    <input
-                        type="text"
-                        value={activityName}
-                        onChange={(e) => setActivityName(e.target.value)}
-                        required
-                    />
-                </div>
-                <div>
-                    <label>Time Taken: </label>
-                    <input
-                        type="text"
-                        value={`${timeTaken.hours}h ${timeTaken.minutes}m ${timeTaken.seconds}s`}
-                        readOnly
-                    />
-                </div>
-            </form>
-
+            <div className="card">
+                <h2>Activity Log</h2>
+                <form>
+                    <div>
+                        <label>Activity Number: </label>
+                        <input type="text" value={activities.length + 1} readOnly />
+                    </div>
+                    <div>
+                        <label>Activity Name: </label>
+                        <input
+                            type="text"
+                            value={activityName}
+                            onChange={(e) => setActivityName(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <div>
+                        <label>Time Taken: </label>
+                        <input
+                            type="text"
+                            value={`${timeTaken.hours}h ${timeTaken.minutes}m ${timeTaken.seconds}s`}
+                            readOnly
+                        />
+                    </div>
+                </form>
+            </div>
             <Timer onActivityEnd={handleActivityEnd} />
 
             <h2>Activity Table</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Activity Number</th>
-                        <th>Activity Name</th>
-                        <th>Time Taken</th>
-                        <th>Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {activities.map((activity, index) => (
-                        <tr key={index}>
-                        <td>{index + 1}</td>
-                        <td>{activity.activityName}</td>
-                        <td>{activity.timeTaken}</td>
-                        <td>{activity.date}</td>
+            <div className="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Activity Number</th>
+                            <th>Activity Name</th>
+                            <th>Time Taken</th>
+                            <th>Date</th>
                         </tr>
-                     ))}
-                </tbody>
+                    </thead>
+                    <tbody>
+                        {activities.map((activity, index) => (
+                            <tr key={index}>
+                            <td>{index + 1}</td>
+                            <td>{activity.activityName}</td>
+                            <td>{activity.timeTaken}</td>
+                            <td>{activity.date}</td>
+                            </tr>
+                        ))}
+                    </tbody>
 
-            </table>
-
+                </table>
+            </div>
             <Logout />
         </div>
     );

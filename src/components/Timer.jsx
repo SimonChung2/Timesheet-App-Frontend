@@ -56,14 +56,16 @@ export default function Timer({ onActivityEnd }) {
   }
 
   return (
-    <>
+    <div className="timer-display">
       <h2>Timer</h2>
-      <div>
+      <div className="timer">
         <span>{hours} : {minutes < 10 ? `0${minutes}` : minutes} : {seconds < 10 ? `0${seconds}` : seconds}</span>
       </div>
-      <button onClick={startTimer}>Start Activity</button>
-      <button onClick={stopTimer}>Pause Activity</button>
-      <button onClick={endActivity}>End Activity</button>
-    </>
+      <div>
+        <button onClick={startTimer}>Start Activity</button>
+        <button onClick={stopTimer}>Pause Activity</button>
+        <button onClick={endActivity}>End Activity</button>
+      </div>
+    </div>
   );
 }
