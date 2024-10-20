@@ -33,7 +33,7 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #0e7cf1;
+  background-color: #f7ed33;
   cursor: pointer;
   transition: border-color 0.25s;
   margin-right: 1rem; /* Add margin to space out the buttons */
@@ -49,4 +49,22 @@ button:hover {
 
 button:focus {
   outline: none;
+}
+
+.form-group {
+  display: flex;               /* Use flexbox for alignment */
+  align-items: center;        /* Vertically center items */
+  margin-bottom: 1rem;        /* Space between fields */
+}
+
+label {
+  margin-right: 1rem;         /* Space between label and input */
+  width: 150px;               /* Fixed width for labels */
+}
+
+input {
+  padding: 0.5em;             /* Add padding for input fields */
+  border: 1px solid #ccc;     /* Light border for input fields */
+  border-radius: 4px;         /* Rounded corners for input fields */
+  flex-grow: 1;               /* Allow input to grow to fill space */
 }

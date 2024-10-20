@@ -75,16 +75,12 @@ function Account({ user }) {
 
     return (
         <div>
-            <h1>Your Account</h1>
-            <p>Username: {user?.username}</p>
+            <h1>Logged in as: {user?.username}</h1>
             <div className="card">
                 <h2>Activity Log</h2>
                 <form>
-                    <div>
-                        <label>Activity Number: </label>
-                        <input type="text" value={activities.length + 1} readOnly />
-                    </div>
-                    <div>
+
+                    <div className='form-group'> 
                         <label>Activity Name: </label>
                         <input
                             type="text"
@@ -93,14 +89,7 @@ function Account({ user }) {
                             required
                         />
                     </div>
-                    <div>
-                        <label>Time Taken: </label>
-                        <input
-                            type="text"
-                            value={`${timeTaken.hours}h ${timeTaken.minutes}m ${timeTaken.seconds}s`}
-                            readOnly
-                        />
-                    </div>
+
                 </form>
             </div>
             <Timer onActivityEnd={handleActivityEnd} />
